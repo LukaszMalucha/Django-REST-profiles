@@ -34,12 +34,8 @@ class UserProfileManager(BaseUserManager):
         return user
 
 
-
-
-
 class UserProfile(AbstractBaseUser, PermissionsMixin):
     """Represents a user profile"""
-
 
     email = models.EmailField(max_length=255, unique=True)
     name = models.CharField(max_length=255)
@@ -68,31 +64,16 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     # print user profile
 
     def __str__(self):
-
         return self.email
-
 
 
 class ProfileFeedItem(models.Model):
     """Profile status update"""
 
     # Get user profile
-    user_profile = models.ForeignKey('USerProfile', on_delete=models.CASCADE)
+    user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     status_text = models.CharField(max_length=255)
     created_on = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-
         return self.status_text
-
-
-
-
-
-
-
-
-
-
-
-

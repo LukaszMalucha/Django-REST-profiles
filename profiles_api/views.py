@@ -7,6 +7,8 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework import filters
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticated
 
 from . import serializers
 from . import models
@@ -128,6 +130,21 @@ class LoginViewSet(viewsets.ViewSet):
         """Use the ObtainAuthToken APIView to validate and create a token"""
 
         return ObtainAuthToken().post(request)
+
+
+class UserProfileFeedViewSet(viewsets.ModelViewSet):
+    """Handles creating, reading and updating profile feed items"""
+
+    authentication_classes = (TokenAuthentication, ) ### TUPLE!
+    serializer_class = serializers.ProfileFeedItemSerializer
+    queryset = models.ProfileFeedItem.objects.all()
+    permission_classes = (permissions.PostOwnStatus, IsAuthenticated)
+
+    # Make sure that feed item user is set to currently logged in user
+    def perform_create(self, serializer):
+        """sets the user profile to the logged in user"""
+        serializer.save(user_profile=self.request.user)
+
 
 
 
